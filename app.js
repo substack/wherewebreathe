@@ -1,11 +1,6 @@
-//require('./db');
-/**
- * Module dependencies.
- */
 var express = require('express');
 var routes = require('./routes');
 var login = require('./routes/login')
-//var user = require('./routes/user');
 var http = require('http');
 var path = require('path');
 var engine = require('ejs-locals');
@@ -47,21 +42,20 @@ app.locals.regErr = [];
 app.locals.tour = null
 
 // passport config
-var User = require('./models/db').user;
+var User = require('./models/user.js');
 //use next line instead of 'passport.use(new LocalStrategy(Account.authenticate()));' in conjuction with usernameField option (in account.js) to use email input from frontend to use email instead of username. 
 passport.use(User.createStrategy());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 //login routes
-//require('./routes/loginBK')(app);
-app.get('/register', login.register_get);
-app.post('/register', login.register_post);
+app.get('/register', require('./routes/register.js').get);
+app.post('/register', require('./routes/register.js').post);
 app.get('/login', login.login_get);
 app.get('/login/:msg/:msgType', login.login_get);
 app.post('/login', login.login_post)
 app.post('/logout', login.logout);
-app.post('/resend', login.resend);
+app.post('/resend', require('./routes/resend.js').post);
 app.get('/verify/:token', login.verify_get);
 app.get('/forgotpass', login.forgotpass_get);
 app.post('/forgotpass', login.forgotpass_post);

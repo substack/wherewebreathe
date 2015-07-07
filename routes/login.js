@@ -1,7 +1,7 @@
 var passport = require('passport');
-var User = require('../models/db').user;
-var NewUser = require('../models/db').newuser;
-var PassReset = require('../models/db').passReset;
+var User = require('../models/user.js');
+var NewUser = require('../models/newuser.js');
+var PassReset = require('../models/pass_reset.js');
 var nodemailer = require("nodemailer");
 
 var authenticateUser = require('./authUser').authUser;
@@ -9,7 +9,6 @@ var getUsername = require('./authUser').getUsername
 var generateUnanswered = require('../lib/generate_unanswered.js');
 
 var mail = require('../lib/mail.js');
-var validateUser = require('../lib/validate_user.js');
 var validate = require('../lib/validate.js');
 var randomBytes = require('crypto').randomBytes;
 
@@ -81,62 +80,6 @@ exports.getRandomUsername =  function(req, res){
   }
 }
 
-exports.register_get = function(req, res) {
-  var pageOptions = { title: "Join Where We Breathe", user : getUsername(req), regErr: []};
-  var temp = req.flash('info');
-  if(temp.length > 0){
-    pageOptions['message'] =  {text: temp[0], msgType: temp[1]}
-  }  
-  res.render('login/register', pageOptions);
-};
-
-//add new user to DB
-exports.register_post = function(req, res) {
-  validateUser(req.body, function (errors, params) {
-    if (errors.length) {
-      return res.render('errors.ejs', {
-        title: 'Where We Breathe: registration error',
-        user: getUsername(req),
-        errors: errors
-      });
-    }
-    randomBytes(48, function (ex, buf) {
-      var token = buf.toString('hex');
-      NewUser.register(new NewUser({ 
-        username : params.username,
-        email: params.email,
-        HID: params.HID,
-        token: token 
-      }), params.password, onuser);
-    });
-  });
-
-  function onuser (err, user) {
-    if (err) {
-      console.log('user registration error:', err);
-      return res.send(500, {
-        error: 'Something went wrong on our side of things. Please try'
-          + ' again, or contact us to let us know. (Error ID: 821)'
-      });
-    }
-    var opts = {
-      to: req.body.email,
-      host: req.headers.host || 'localhost',
-      token: user.token
-    };
-    mail.verifyRegister(opts, function (err) {
-      if (err) return res.send(500, {
-        error: 'Email delivery failed: ' + err.message
-      });
-      res.render('login/register-success', {
-        title: 'Where We Breathe',
-        user: getUsername(req),
-        email: user.email
-      });
-    });
-  }
-};
-
 //verify new users' emails
 exports.verify_get =  function(req, res) {
   //remove user from newusers (unverified) table
@@ -206,40 +149,6 @@ exports.login_post = function(req, res) {
         if(error){throw err}
         //req.flash('info', ['It looks like this it the first time you have logged in. Please take a moment to review your privacy settings before continuing on to the rest of the site.', 'alert-warning'])
         res.redirect('/welcome');
-    });
-  }
-};
-
-exports.resend = function(req, res) {
-  NewUser.findOne({ email: req.body.email }, function (err, user) {
-    if (err) {throw err}
-    if (!user) {
-      return res.render('message', {
-        title: 'Oops!',
-        user : getUsername(req),
-        message: {
-          text: "That email wasn't found in the list of unconfirmed emails."
-            + 'Try logging in normally or register an account.',
-          msgType: 'alert-danger'
-        }
-      });
-    }
-    mail.resendVerifyRegister({
-      to: user.email,
-      host: req.headers.host || 'localhost',
-      token: user.token
-    }, onmail)
-  });
-
-  function onmail (err) {
-    if (err) {
-      res.send(500, 'error sending email: ' + err.message);
-    }
-    else res.render('message', {
-      title: 'email sent',
-      user: getUsername(req),
-      message: 'Email sent. Check your inbox and spam folder for'
-        + ' a confirmation link.',
     });
   }
 };

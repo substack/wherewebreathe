@@ -1,5 +1,5 @@
-var User = require('../models/db').user;
-var NewUser = require('../models/db').newuser;
+var User = require('../user.js');
+var NewUser = require('../newuser.js');
 var isValidEmail = require('is-valid-email');
 var str = JSON.stringify;
 
