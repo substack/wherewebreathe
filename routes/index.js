@@ -1,12 +1,12 @@
 var mongoose = require( 'mongoose' );
 var Schema = mongoose.Schema;
-var Question = require('../models/db').question;
-var Answer = require('../models/db').answer;
+var Question = require('../models/question.js');
+var Answer = require('../models/answer.js');
 var authenticateUser = require('./authUser').authUser;
 var getUsername = require('./authUser').getUsername
-var User = require('../models/db').user;
-var StoryPrompt = require('../models/db').storyPrompt;
-var Story = require('../models/db').story;
+var User = require('../models/user.js');
+var StoryPrompt = require('../models/story_prompt.js');
+var Story = require('../models/story.js');
 var generateUnanswered = require('../lib/generate_unanswered.js');
 var csv = require('express-csv')
 
