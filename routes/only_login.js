@@ -3,6 +3,9 @@ var show = require('../lib/show.js');
 var returnTo = require('../lib/return_to.js');
 
 exports.post = function (req, res) {
+  if (req.headers.referrer) {
+    req.session.returnTo = req.headers.referrer;
+  }
   User.challenge(req, res, function (err, user) {
     if (err && err.code === 'confirm') {
       res.render('login/confirm', {
