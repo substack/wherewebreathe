@@ -1,6 +1,7 @@
 var express = require('express');
 var routes = require('./routes');
-var login = require('./routes/login')
+var onlyLogin = require('./routes/only_login.js')
+var login = require('./routes/login.js')
 var http = require('http');
 var path = require('path');
 var engine = require('ejs-locals');
@@ -51,9 +52,9 @@ passport.deserializeUser(User.deserializeUser());
 //login routes
 app.get('/register', require('./routes/register.js').get);
 app.post('/register', require('./routes/register.js').post);
-app.get('/login', login.login_get);
-app.get('/login/:msg/:msgType', login.login_get);
-app.post('/login', login.login_post)
+app.get('/login', onlyLogin.get)
+app.get('/login/:msg/:msgType', onlyLogin.get);
+app.post('/login', onlyLogin.post);
 app.post('/logout', login.logout);
 app.post('/resend', require('./routes/resend.js').post);
 app.get('/verify/:token', require('./routes/verify.js').get);

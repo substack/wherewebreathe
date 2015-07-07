@@ -20,6 +20,7 @@
     "mongodb": ">= 0.9.6-7",
     "mongoose": "3.8.1",
     "nodemailer": "^0.7.1",
+    "once": "https://registry.npmjs.org/once/-/once-1.1.1.tgz",
     "passport": "^0.2.0",
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^0.3.0",

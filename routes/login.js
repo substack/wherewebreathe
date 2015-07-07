@@ -7,6 +7,7 @@ var nodemailer = require("nodemailer");
 var authenticateUser = require('./authUser').authUser;
 var getUsername = require('./authUser').getUsername
 var generateUnanswered = require('../lib/generate_unanswered.js');
+var returnTo = require('../lib/return_to.js');
 
 var mail = require('../lib/mail.js');
 var validate = require('../lib/validate.js');
@@ -31,25 +32,6 @@ function checkCommonName(username){
   return "Your username contains the text, '"+name+"'. Please choose another username that does not contain a common name. (this is an extra step to maintain your anonymity)"
   }else{
     return "ok"
-  }
-}
-function returnTo(res, req, message){
-  //console.log(req.session);
-  if (message){msg = message;}
-  else if (req.session.msg){msg = req.session.msg}
-  else{msg = null;}
-  //if session variable has redirect info
-  if(req.session.returnTo){
-    //console.log(req.session.returnTo);
-    var msg;
-    //have to use redirect instead of render to make sure page variables are sent (cent find a way to access them from req...)// wanted to be able to use message
-    res.redirect(req.session.returnTo);
-    //console.log(req.session.returnTo);
-    //clear redirect info
-    delete req.session.returnTo
-  }
-  else{
-    res.render('index', { title: 'Home', user : getUsername(req), message: msg});
   }
 }
 /********************************************************************************************
@@ -79,73 +61,6 @@ exports.getRandomUsername =  function(req, res){
     
   }
 }
-
-exports.login_post = function(req, res) {
-  NewUser.findOne({ email: req.body.email }, onfind);
-  var auth = passport.authenticate('local', onauth);
-
-  function onfind (err, user) {
-    if (err) {throw err}
-    if (user) {
-      return res.render('login/confirm', {
-        title: 'Confirm your email',
-        user: getUsername(req),
-        email: req.body.email,
-        token: user.token
-      })
-    }
-    auth(req, res, function (err) {
-      if (err) throw err;
-    });
-  }
-
-  function onauth (err, user, failure) {
-    if (failure) {
-      res.render('message', {
-        title: 'Authentication Failed',
-        user: getUsername(req),
-        message: failure.message
-      })
-    }
-    else generateUnanswered(req, user, showLogin.bind(null, user));
-  }
-
-  function showLogin (user) {
-    //if user doesnt have privacy settings yet, redirect to privacy setting
-    // page, first save dafaults
-    if(!user.firstLogin) return returnTo(res, req);
-
-    User.findByIdAndUpdate(user._id,{$unset: {firstLogin: 1 }, visPublic : false},
-    function(error, results){
-        if(error){throw err}
-        //req.flash('info', ['It looks like this it the first time you have logged in. Please take a moment to review your privacy settings before continuing on to the rest of the site.', 'alert-warning'])
-        res.redirect('/welcome');
-    });
-  }
-};
-
-exports.login_get = function(req, res) {
-  var message;
-  //used url paramater for error, next phase could use flash message
-  if (req.params.msg){
-    message = { text: req.params.msg, msgType: req.params.msgType};
-  }
-  //flash message, keeping req.params bit for now because it holds validation message
-  //for some reason, req.flash clears once accessed
-  var temp = req.flash('info');
-  if(temp.length > 0){
-    message =  {text: temp[0], msgType: temp[1]}
-  }
-  var temp = req.flash('info');
-    if(temp.length > 0){
-      pageOptions['message'] =  {text: temp[0], msgType: temp[1]}
-    } 
-  res.render('login/login', {
-    title: 'Login',
-    user : getUsername(req),
-    message: message ? message.text : ''
-  });
-}; 
 
 exports.logout =  function(req, res) {
       req.logout();
