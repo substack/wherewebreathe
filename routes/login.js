@@ -80,35 +80,6 @@ exports.getRandomUsername =  function(req, res){
   }
 }
 
-//verify new users' emails
-exports.verify_get =  function(req, res) {
-  //remove user from newusers (unverified) table
-  NewUser.findOneAndRemove({token: req.params.token}, function ( err, user){
-    if (err) {throw err};
-    if (user){
-      //put user in users (verified) table
-      var verified = new User({ 
-        username: user.username,
-        salt: user.salt, 
-        hash: user.hash,
-        email: user.email,
-        HID: user.HID, 
-        firstLogin: true,
-        answered: []
-      });
-      verified.save(function(err) {
-        if (err) {throw err}
-        else{
-          res.render('login/login', {title: "Login", user : getUsername(req), message:  {text: "Your account registration in now complete. Please login.", msgType: "alert-success" }});
-        }
-      });      
-    }
-    else{
-      res.render('message', { title: 'Oops!', user : getUsername(req), message: {text:"That verification code has expired. If you registered more than a day ago, try registering again, and clicking the verify link that is emailed to you right away.", msgType: "alert-danger"} });
-    }
-  });
-}
-
 exports.login_post = function(req, res) {
   NewUser.findOne({ email: req.body.email }, onfind);
   var auth = passport.authenticate('local', onauth);

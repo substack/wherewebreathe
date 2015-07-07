@@ -56,7 +56,7 @@ app.get('/login/:msg/:msgType', login.login_get);
 app.post('/login', login.login_post)
 app.post('/logout', login.logout);
 app.post('/resend', require('./routes/resend.js').post);
-app.get('/verify/:token', login.verify_get);
+app.get('/verify/:token', require('./routes/verify.js').get);
 app.get('/forgotpass', login.forgotpass_get);
 app.post('/forgotpass', login.forgotpass_post);
 app.get('/resetpass', login.resetpass_get);

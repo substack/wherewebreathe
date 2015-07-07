@@ -5,6 +5,7 @@ var UserPlugin = require('passport-local-mongoose');
 
 var validate = require('./newuser/validate.js');
 var mail = require('../lib/mail.js');
+var User = require('./user.js');
 
 var schema = new Schema({
   username: String,
@@ -68,4 +69,25 @@ NewUser.create = function (params, cb) {
     if (err) cb([ err ])
     else cb(null, user)
   }
+};
+
+NewUser.verify = function (token, cb) {
+  NewUser.findOneAndRemove({ token: token }, function (err, user) {
+    if (err) return cb(err);
+    if (!user) return cb(new Error(
+      'That verification code has expired.'
+      + ' If you registered more than a day ago, try registering again,'
+      + ' and clicking the verify link that is emailed to you right away.'
+    ));
+    var verified = new User({
+      username: user.username,
+      salt: user.salt,
+      hash: user.hash,
+      email: user.email,
+      HID: user.HID,
+      firstLogin: true,
+      answered: []
+    });
+    verified.save(cb);
+  });
 };
