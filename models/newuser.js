@@ -1,9 +1,8 @@
 var Schema = require('mongoose').Schema;
 var db = require('./');
-var randomBytes = require('crypto');
+var randomBytes = require('crypto').randomBytes;
 var UserPlugin = require('passport-local-mongoose');
 
-var validate = require('./newuser/validate.js');
 var mail = require('../lib/mail.js');
 var User = require('./user.js');
 
@@ -51,11 +50,13 @@ schema.methods.resendVerifyEmail = function (params, cb) {
 var NewUser = db.model('newuser', schema);
 module.exports = NewUser;
 
+var validate = require('./newuser/validate.js');
+
 NewUser.create = function (params, cb) {
   validate(params, function (errors) {
     if (errors.length) return cb(errors);
     randomBytes(48, function (err, buf) {
-      if (err) return cb([ err ]);
+      if (err) return cb([err]);
       NewUser.register(new NewUser({
         username: params.username,
         email: params.email,
@@ -66,8 +67,8 @@ NewUser.create = function (params, cb) {
   });
   
   function onuser (err, user) {
-    if (err) cb([ err ])
-    else cb(null, user)
+    if (err) cb([err])
+    else cb([], user)
   }
 };
 

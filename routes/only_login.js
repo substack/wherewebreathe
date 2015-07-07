@@ -1,12 +1,13 @@
 var User = require('../models/user.js');
 var show = require('../lib/show.js');
 var returnTo = require('../lib/return_to.js');
+var challenge = require('../lib/challenge.js');
 
 exports.post = function (req, res) {
   if (req.headers.referrer) {
     req.session.returnTo = req.headers.referrer;
   }
-  User.challenge(req, res, function (err, user) {
+  challenge(req, res, function (err, user) {
     if (err && err.code === 'confirm') {
       res.render('login/confirm', {
         title: 'Confirm your email',
@@ -42,7 +43,7 @@ exports.get = function(req, res) {
   if (msg) delete req.session.message;
   res.render('login/login', {
     title: 'Login',
-    user : getUsername(req),
+    user : req.user && req.username || null,
     message: msg || ''
   });
 }; 

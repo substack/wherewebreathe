@@ -13,14 +13,14 @@ exports.post = function(req, res) {
   NewUser.create(req.body, function (errors, user) {
     if (errors.length) return show.err(req, res, 'registration error', errors);
     user.sendVerifyEmail({ host: req.headers.host }, onemail);
+
+    function onemail (err) {
+      if (err) return show.err(req, res, 'email delivery failure', err);
+      res.render('login/register-success', {
+        title: 'Where We Breathe',
+        user: getUsername(req),
+        email: user.email
+      });
+    }
   });
- 
-  function onemail (err) {
-    if (err) return show.err(req, res, 'email delivery failure', err);
-    res.render('login/register-success', {
-      title: 'Where We Breathe',
-      user: getUsername(req),
-      email: user.email
-    });
-  }
 };
