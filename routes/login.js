@@ -6,7 +6,7 @@ var nodemailer = require("nodemailer");
 
 var authenticateUser = require('./authUser').authUser;
 var getUsername = require('./authUser').getUsername
-var generateUnanswered = require('./generateUnanswered');
+var generateUnanswered = require('../lib/generate_unanswered.js');
 
 var mail = require('../lib/mail.js');
 var validateUser = require('../lib/validate_user.js');
@@ -165,15 +165,12 @@ exports.verify_get =  function(req, res) {
     }
   });
 }
-/************************************************************************
-LOGIN
-*************************************************************************/
 
-var auth = passport.authenticate('local', {
-  failureRedirect: '/login/Invalid username or password./alert-danger'
-});
 exports.login_post = function(req, res) {
-  NewUser.findOne({ email: req.body.email }, function (err, user) {
+  NewUser.findOne({ email: req.body.email }, onfind);
+  var auth = passport.authenticate('local', onauth);
+
+  function onfind (err, user) {
     if (err) {throw err}
     if (user) {
       return res.render('login/confirm', {
@@ -185,16 +182,26 @@ exports.login_post = function(req, res) {
     }
     auth(req, res, function (err) {
       if (err) throw err;
-      generateUnanswered(req, showlogin);
     });
-  });
+  }
 
-  function showLogin(){
+  function onauth (err, user, failure) {
+    if (failure) {
+      res.render('message', {
+        title: 'Authentication Failed',
+        user: getUsername(req),
+        message: failure.message
+      })
+    }
+    else generateUnanswered(req, user, showLogin.bind(null, user));
+  }
+
+  function showLogin (user) {
     //if user doesnt have privacy settings yet, redirect to privacy setting
     // page, first save dafaults
-    if(!req.user.firstLogin) return returnTo(res, req);
+    if(!user.firstLogin) return returnTo(res, req);
 
-    User.findByIdAndUpdate(req.user._id,{$unset: {firstLogin: 1 }, visPublic : false},
+    User.findByIdAndUpdate(user._id,{$unset: {firstLogin: 1 }, visPublic : false},
     function(error, results){
         if(error){throw err}
         //req.flash('info', ['It looks like this it the first time you have logged in. Please take a moment to review your privacy settings before continuing on to the rest of the site.', 'alert-warning'])
@@ -256,7 +263,7 @@ exports.login_get = function(req, res) {
   res.render('login/login', {
     title: 'Login',
     user : getUsername(req),
-    message: message.text
+    message: message ? message.text : ''
   });
 }; 
 

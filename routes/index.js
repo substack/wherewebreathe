@@ -7,7 +7,7 @@ var getUsername = require('./authUser').getUsername
 var User = require('../models/db').user;
 var StoryPrompt = require('../models/db').storyPrompt;
 var Story = require('../models/db').story;
-var generateUnanswered = require('./generateUnanswered');
+var generateUnanswered = require('../lib/generate_unanswered.js');
 var csv = require('express-csv')
 
 
