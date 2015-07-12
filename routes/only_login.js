@@ -1,28 +1,27 @@
 var User = require('../models/user.js');
+var NewUser = require('../models/newuser.js');
 var show = require('../lib/show.js');
 var returnTo = require('../lib/return_to.js');
-var challenge = require('../lib/challenge.js');
+var passport = require('passport');
 
-exports.post = function (req, res) {
-  if (req.headers.referrer) {
-    req.session.returnTo = req.headers.referrer;
+var pfn = passport.authenticate('local');
+exports.post = function (req, res, next) {
+  NewUser.findOne({ email: req.body.email }, onfind);
+
+  function onfind (err, user) {
+    if (err) res.render('errors', { errors: err });
+    else if (user) res.render('login/confirm', {
+      title: 'Confirm your email',
+      user: req.user && req.user.username,
+      email: req.body.email,
+      token: user.token
+    });
+    else pfn(req, res, onauth);
   }
-  challenge(req, res, function (err, user) {
-    if (err && err.code === 'confirm') {
-      res.render('login/confirm', {
-        title: 'Confirm your email',
-        user: getUsername(req),
-        email: req.body.email,
-        token: user.token
-      });
-    }
-    else if (err) show.err(req, res, 'Oops!', err);
-    else showLogin(user);
-  });
 
-  function showLogin (user) {
-    //if user doesnt have privacy settings yet, redirect to privacy setting
-    // page, first save dafaults
+  function onauth (err) {
+    if (err) return res.render('errors', { errors: err });
+    var user = req.user;
     if (user.firstLogin) {
       user.update({ $unset: { firstLogin: 1 }, visPublic: false }, onfind);
     }

@@ -1,6 +1,7 @@
 var Schema = require('mongoose').Schema;
 var once = require('once');
 var UserPlugin = require('passport-local-mongoose');
+
 var db = require('./');
 
 var UserSchema = new Schema({
