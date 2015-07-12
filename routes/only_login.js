@@ -3,24 +3,29 @@ var NewUser = require('../models/newuser.js');
 var show = require('../lib/show.js');
 var returnTo = require('../lib/return_to.js');
 var passport = require('passport');
+var concat = require('concat-stream');
 
 var pfn = passport.authenticate('local');
 exports.post = function (req, res, next) {
   NewUser.findOne({ email: req.body.email }, onfind);
+  var chunks = [];
+  var rres = concat(function (body) {
+    show.err(req, res, 'Login error', body.toString());
+  });
 
   function onfind (err, user) {
-    if (err) res.render('errors', { errors: err });
+    if (err) show.err(req, res, 'Login error', err)
     else if (user) res.render('login/confirm', {
       title: 'Confirm your email',
       user: req.user && req.user.username,
       email: req.body.email,
       token: user.token
     });
-    else pfn(req, res, onauth);
+    else pfn(req, rres, onauth);
   }
 
   function onauth (err) {
-    if (err) return res.render('errors', { errors: err });
+    if (err) return show.err(req, res, 'Login error', err);
     var user = req.user;
     if (user.firstLogin) {
       user.update({ $unset: { firstLogin: 1 }, visPublic: false }, onfind);
