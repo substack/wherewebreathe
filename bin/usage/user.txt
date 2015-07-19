@@ -1,0 +1,8 @@
+bin/user.js set USERNAME KEY VALUE
+
+Examples:
+
+  Set the role for the user named "dino" to admin:
+
+    bin/user.js set dino role admin
+ 

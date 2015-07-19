@@ -15,7 +15,8 @@ var UserSchema = new Schema({
   firstLogin: Boolean,
   visPublic: Boolean,
   passReset: String,
-  answered: Array
+  answered: Array,
+  role: String // 'su', 'admin', 'facilitator', 'user' (default), 'moderated'
 });
 UserSchema.plugin(UserPlugin, { usernameField: 'email' });
 
