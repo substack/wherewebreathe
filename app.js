@@ -91,6 +91,7 @@ app.get('/knowledge-base', routes.knowledgebase);
 app.get('/vinhud', routes.vinhud);
 app.get('/exportData', routes.exportData);
 app.get('/download', routes.download);
+app.get('/admin', require('./routes/admin/home'));
 
 
 app.post('/test', routes.test);
