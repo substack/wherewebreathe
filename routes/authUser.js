@@ -6,7 +6,7 @@
     res.redirect('login');
   }
   else{
-    success();
+    success(req, res);
   }
 }
 //check if username, if not logged in set username to null
