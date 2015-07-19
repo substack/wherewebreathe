@@ -1,3 +1,7 @@
 .admins th {
   min-width: 15ex;
 }
+
+.updater {
+  margin-bottom: 2em;
+}

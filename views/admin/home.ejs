@@ -1,6 +1,27 @@
 <% layout('/layout') -%>
 <% stylesheet('/stylesheets/admin.css')%>
 <div class="container-fluid">
+  <% if (ring >= rings.admin) { %>
+    <h3>directly update a user role</h3>
+    <form action="/admin/role/update" method="POST" class="updater">
+      <input type="text" name="name" placeholder="username">
+      <select name="role">
+        <% if (ring >= rings.su) { %>
+          <option>su</option>
+        <% } %>
+        <% if (ring >= rings.admin) { %>
+          <option>admin</option>
+          <option selected>facilitator</option>
+          <option>user</option>
+          <option>moderated</option>
+        <% } %>
+        </select>
+        <button type="submit">update</button>
+      </form>
+    <% } %>
+  </table>
+  </form>
+  <h3>admins</h3>
   <table class="admins">
     <tr>
       <th>username</th>
@@ -18,7 +39,7 @@
         <% if (ring >= rings.admin) { %>
           <td><form action="/admin/role/update" method="POST">
             <input type="hidden" name="name" value="<%= user.username %>">
-            <select name="role" value="<%= user.role %>">
+            <select name="role">
               <% if (ring >= rings.su) { %>
                 <option<%= user.role === 'su' ? ' selected': '' %>
                 >su</option>
