@@ -16,18 +16,23 @@
           <%= user.email %>
         </td>
         <% if (ring >= rings.admin) { %>
-          <td><form action="/admin/role/update">
-            <select>
+          <td><form action="/admin/role/update" method="POST">
+            <input type="hidden" name="name" value="<%= user.username %>">
+            <select name="role" value="<%= user.role %>">
               <% if (ring >= rings.su) { %>
-                <option>su</option>
+                <option<%= user.role === 'su' ? ' selected': '' %>
+                >su</option>
               <% } %>
               <% if (ring >= rings.admin) { %>
-                <option>admin</option>
-                <option>facilitator</option>
-                <option>user</option>
+                <option<%= user.role === 'admin' ? ' selected': '' %>
+                >admin</option>
+                <option<%= user.role === 'facilitator' ? ' selected': '' %>
+                >facilitator</option>
+                <option<%= user.role === 'user' ? ' selected': '' %>
+                >user</option>
               <% } %>
             </select>
-            <button>update</button>
+            <button type="submit">update</button>
           </form></td>
         <% } else { %>
           <%= user.role %>

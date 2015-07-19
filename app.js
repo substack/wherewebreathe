@@ -77,6 +77,7 @@ app.get('/', routes.index);
 app.get('/welcome', routes.welcome);
 app.get('/dashboard', routes.dashboard);
 app.get('/admin', require('./routes/admin/home.js'));
+app.post('/admin/role/update', require('./routes/admin/update_role.js'));
 app.get('/forums/:qSet', routes.narratives);
 app.get('/forums/:qSet/:returnTo', routes.narratives);
 app.post('/narrativesData', routes.narrativesData);//this should be get when cleaning up code?
