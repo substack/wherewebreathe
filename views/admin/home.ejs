@@ -1,4 +1,38 @@
 <% layout('/layout') -%>
+<% stylesheet('/stylesheets/admin.css')%>
 <div class="container-fluid">
-  role=<%= role %>
+  <table class="admins">
+    <tr>
+      <th>username</th>
+      <th>email</th>
+      <th>role</th>
+    </tr>
+    <% adminUsers.forEach(function (user) { %>
+      <tr>
+        <td>
+          <%= user.username %>
+        </td>
+        <td>
+          <%= user.email %>
+        </td>
+        <% if (ring >= rings.admin) { %>
+          <td><form action="/admin/role/update">
+            <select>
+              <% if (ring >= rings.su) { %>
+                <option>su</option>
+              <% } %>
+              <% if (ring >= rings.admin) { %>
+                <option>admin</option>
+                <option>facilitator</option>
+                <option>user</option>
+              <% } %>
+            </select>
+            <button>update</button>
+          </form></td>
+        <% } else { %>
+          <%= user.role %>
+        <% } %>
+      </tr>
+    <% }) %>
+  </table>
 </div>

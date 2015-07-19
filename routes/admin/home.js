@@ -1,9 +1,39 @@
 var User = require('../../models/user.js');
+var show = require('../../lib/show.js');
+
+var rings = {
+  su: 3,
+  admin: 2,
+  facilitator: 1
+}; 
 
 module.exports = function (req, res) {
-  res.render('admin/home', {
-    user: req.user && req.user.username,
-    title: 'admin home',
-    role: req.user && req.user.role
+  if (!req.user) {
+    return show.err(req, res, 'Please log in.',
+      'You must authenticate to view this page.');
+  }
+  if (!cansee(req.user.role)) {
+    return show.err(req, res, 'Not authorized',
+      'You are not authorized to view this page.');
+  }
+  var adminRoles = [ 'su', 'admin', 'facilitator' ];
+  User.find({ role: { $in: adminRoles } }, function (err, users) {
+    if (err) return show.error(req, res, 'Oops', err);
+    render(users);
   });
+ 
+  function render (adminUsers) {
+    res.render('admin/home', {
+      user: req.user && req.user.username,
+      title: 'admin dashboard',
+      role: req.user.role,
+      ring: rings[req.user.role],
+      rings: rings,
+      adminUsers: adminUsers
+    });
+  }
 };
+
+function cansee (role) {
+  return /^(su|admin|facilitator)$/.test(role);
+}
