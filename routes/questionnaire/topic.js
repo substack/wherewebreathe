@@ -9,13 +9,20 @@ module.exports = function (req, res) {
     { qSet : req.params.topic },
     '_id order',
     { sort: { order: 1 }
-  }, onqs),
+  }, onqs);
   
   function onqs (err, questions) {
     if (err) return show.err(req, res, 'Oops', err);
+    if (questions.length === 0) {
+      return res.render('questionnaire/complete', {
+        title: 'questionnaire complete',
+        user: req.user && req.user.username,
+        topic: req.params.topic
+      })
+    }
     var question = questions[0];
     res.render('questionnaire', {
-      user : getUsername(req),
+      user: req.user && req.user.username,
       title: 'Questionnaire',
       qSet: question.qSet,
       question: question.question, 
@@ -94,4 +101,4 @@ module.exports = function (req, res) {
     });
   });//end auth user
 };
-  */
+*/

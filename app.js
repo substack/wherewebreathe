@@ -82,7 +82,7 @@ app.post('/comment', routes.comment);
 app.get('/fullstory/:_id', routes.fullstory);
 app.post('/skipq/:skipq', routes.skipQ);
 app.post('/savestory', routes.saveStory);
-app.get('/questionnaire/topic/:qset', require('./routes/questionnaire/topic.js'));
+app.get('/questionnaire/topic/:topic', require('./routes/questionnaire/topic.js'));
 app.get('/questionnaire/next/:nextq', require('./routes/questionnaire/next.js'));
 app.get('/goback', routes.goBackSkipped);
 app.post( '/answer', routes.answer );
