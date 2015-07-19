@@ -28,6 +28,10 @@ app.use(express.session());
 app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(function (req, res, next) {
+  res.locals({ require: require, user: req.user });
+  next();
+});
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
