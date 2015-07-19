@@ -1,5 +1,6 @@
 var User = require('../../models/user.js');
 var show = require('../../lib/show.js');
+var isadmin = require('../../lib/isadmin.js');
 
 var rings = {
   su: 3,
@@ -12,7 +13,7 @@ module.exports = function (req, res) {
     return show.err(req, res, 'Please log in.',
       'You must authenticate to view this page.');
   }
-  if (!cansee(req.user.role)) {
+  if (!isadmin(req.user.role)) {
     return show.err(req, res, 'Not authorized',
       'You are not authorized to view this page.');
   }
@@ -24,7 +25,7 @@ module.exports = function (req, res) {
  
   function render (adminUsers) {
     res.render('admin/home', {
-      user: req.user && req.user.username,
+      user: req.user,
       title: 'admin dashboard',
       role: req.user.role,
       ring: rings[req.user.role],
@@ -33,7 +34,3 @@ module.exports = function (req, res) {
     });
   }
 };
-
-function cansee (role) {
-  return /^(su|admin|facilitator)$/.test(role);
-}

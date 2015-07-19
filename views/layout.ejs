@@ -1,3 +1,4 @@
+<% var isadmin = require('./lib/isadmin.js') %>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -85,7 +86,7 @@
                 <% } %>
                 <% if(user){ %>                         
                       <i class="fa fa-user"></i>
-                      <%= user %>
+                      <%= user.username %>
                       <span class="caret"></span>
                     </button>
                     <div class="dropdown-menu userMenu">
@@ -99,7 +100,7 @@
                           <li>
 			  <a id='logout' href="#" onclick="log_out()">Log out</a>
                           </li>
-                          <% if (typeof admin !== undefined) { %>
+                          <% if (user && isadmin(user.role)) { %>
                             <li>
                               <a href="/admin">admin panel</a>
                             </li>

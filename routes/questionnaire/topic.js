@@ -38,22 +38,22 @@ module.exports = function (req, res) {
     /*
     //if user has answered and not skipped all questions in db
     else if (req.session.unanswered.length <= 0 && !req.session.skip){
-      return res.render('message', { title: 'Questionnaire complete!', user : getUsername(req), message: {text:"Thank you! You have answered all of the survey questions.", msgType: "alert-success"}});
+      return res.render('message', { title: 'Questionnaire complete!', user : req.user, message: {text:"Thank you! You have answered all of the survey questions.", msgType: "alert-success"}});
     }
     //if user has skipped some questions
     else if(req.session.unanswered.length <= 0 && req.session.skip) {
-      return res.render('go-back-to-skipped', { title: 'Questionnaire complete!', user : getUsername(req), message: {text:"You have reached the end of the survey, but you skipped some questions. You may go back and answer them if you would like.", msgType: "alert-warning"}});
+      return res.render('go-back-to-skipped', { title: 'Questionnaire complete!', user : req.user, message: {text:"You have reached the end of the survey, but you skipped some questions. You may go back and answer them if you would like.", msgType: "alert-warning"}});
     }
     Question.find(query, function (err, questions){     
       //if question not found
       if (questions.length <= 0){
-        return res.render('message', { title: 'Oops!', user : getUsername(req), message: {text:"It doesn't look like there is a question there yet", msgType: "alert-danger"} });
+        return res.render('message', { title: 'Oops!', user : req.user, message: {text:"It doesn't look like there is a question there yet", msgType: "alert-danger"} });
       }//end if question
 
       var question = questions[0];
       //console.log(question.storiesPrompt );
       pageOptions = {
-        user : getUsername(req),
+        user : req.user,
         title: 'Questionnaire',
         qSet: question.qSet,
         question: question.question, 

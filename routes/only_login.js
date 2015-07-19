@@ -17,7 +17,7 @@ exports.post = function (req, res, next) {
     if (err) show.err(req, res, 'Login error', err)
     else if (user) res.render('login/confirm', {
       title: 'Confirm your email',
-      user: req.user && req.user.username,
+      user: req.user,
       email: req.body.email,
       token: user.token
     });

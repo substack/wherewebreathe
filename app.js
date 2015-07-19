@@ -29,7 +29,8 @@ app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(function (req, res, next) {
-  res.locals({ require: require, user: req.user });
+  res.locals.require = require;
+  res.locals.user = req.user;
   next();
 });
 app.use(app.router);
@@ -75,6 +76,7 @@ app.get('/getrandomusername', login.getRandomUsername);
 app.get('/', routes.index);
 app.get('/welcome', routes.welcome);
 app.get('/dashboard', routes.dashboard);
+app.get('/admin', require('./routes/admin/home.js'));
 app.get('/forums/:qSet', routes.narratives);
 app.get('/forums/:qSet/:returnTo', routes.narratives);
 app.post('/narrativesData', routes.narrativesData);//this should be get when cleaning up code?
@@ -95,7 +97,6 @@ app.get('/knowledge-base', routes.knowledgebase);
 app.get('/vinhud', routes.vinhud);
 app.get('/exportData', routes.exportData);
 app.get('/download', routes.download);
-app.get('/admin', require('./routes/admin/home'));
 
 
 app.post('/test', routes.test);

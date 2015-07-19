@@ -10,15 +10,6 @@
   }
 }
 //check if username, if not logged in set username to null
-var getUsername = function(req){
-  if (!req.user){
-    return null
-  }
-  else{
-    return req.user.username
-  }
-}
 module.exports = {
-    authUser: authUser,
-    getUsername: getUsername
+    authUser: authUser
 };

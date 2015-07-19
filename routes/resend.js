@@ -1,5 +1,4 @@
 var NewUser = require('../models/newuser.js');
-var getUsername = require('./authUser').getUsername
 var show = require('../lib/show.js');
 
 exports.post = function(req, res) {
