@@ -99,6 +99,11 @@
                           <li>
 			  <a id='logout' href="#" onclick="log_out()">Log out</a>
                           </li>
+                          <% if (typeof admin !== undefined) { %>
+                            <li>
+                              <a href="/admin">admin panel</a>
+                            </li>
+                          <% } %>
                         </ul>
                     </div>                           
                 <% } %>
