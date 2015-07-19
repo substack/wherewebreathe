@@ -3,8 +3,7 @@ var show = require('../lib/show.js');
 
 exports.get = function(req, res) {
   res.render('login/register', {
-    title: 'Join Where We Breathe',
-    user: req.user
+    title: 'Join Where We Breathe'
   });
 };
 
@@ -17,7 +16,6 @@ exports.post = function(req, res) {
       if (err) return show.err(req, res, 'email delivery failure', err);
       res.render('login/register-success', {
         title: 'Where We Breathe',
-        user: req.user,
         email: user.email
       });
     }

@@ -17,7 +17,6 @@ exports.post = function (req, res, next) {
     if (err) show.err(req, res, 'Login error', err)
     else if (user) res.render('login/confirm', {
       title: 'Confirm your email',
-      user: req.user,
       email: req.body.email,
       token: user.token
     });
@@ -47,7 +46,6 @@ exports.get = function(req, res) {
   if (msg) delete req.session.message;
   res.render('login/login', {
     title: 'Login',
-    user : req.user && req.username || null,
     message: msg || ''
   });
 }; 

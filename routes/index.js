@@ -92,7 +92,6 @@ console.log(topics)
       
         var options = { 
           title: 'Home', 
-          user : req.user,
           topics: topics
         }
         return cb(options);  
@@ -155,7 +154,7 @@ exports.storiesPrompt = function(req, res){
           return res.send(400, "Something went wrong on our side of things. Please try again, or contact us to let us know. (Error ID: 625)")
         } 
         console.log(prompt)
-        var options = { title: 'Tell your story', user : req.user, heading: prompt.heading, subheading: prompt.subheading, seedQuestions: prompt.seedQuestions, qSet: req.params.qSet}
+        var options = { title: 'Tell your story', heading: prompt.heading, subheading: prompt.subheading, seedQuestions: prompt.seedQuestions, qSet: req.params.qSet}
         options["returnTo"] = req.params.returnTo||"";
         res.render('stories-prompt', options); 
       });   //end find    
@@ -184,16 +183,15 @@ exports.fullstory = function(req, res){
   authenticateUser(req, res, function(){ 
     Story.findOne({_id: req.params._id},'uname qSet story comments _id qSet', function (err, story){
       if (err){
-        return res.render('message', { title: 'Oops!', user : req.user, message: {text:"Something went wrong on our side of things. Please try again, or contact us to let us know. (Error ID: 637)", msgType: "alert-danger"} });
+        return res.render('message', { title: 'Oops!', message: {text:"Something went wrong on our side of things. Please try again, or contact us to let us know. (Error ID: 637)", msgType: "alert-danger"} });
       } //end if err
       if(!story){
         console.log("fdsfdsnull");
-       return res.render('message', { title: 'Oops!', user : req.user, message: {text:"There doesnt appear to be a story here", msgType: "alert-danger"} });
+       return res.render('message', { title: 'Oops!', message: {text:"There doesnt appear to be a story here", msgType: "alert-danger"} });
       }
       else{
         var options = { 
           title: story.qSet + " Stories", 
-          user : req.user,
           _id: story._id,
           story: story.story, 
           storyUname: story.uname,
@@ -232,7 +230,7 @@ exports.index = function(req, res){
   //if user not logged in send to index, else send to dashboard
   if (!req.user){
     req.session.returnTo = req.path;
-    res.render('index', { title: 'Home', user : req.user});
+    res.render('index', { title: 'Home' });
   }
   else{
     res.redirect('/dashboard');
@@ -241,7 +239,7 @@ exports.index = function(req, res){
 
 exports.welcome = function(req, res){
   //authenticateUser(req, res, function(){ 
-  //res.render('welcome', { title: 'Home', user : req.user, tour: 'yes'});
+  //res.render('welcome', { title: 'Home', tour: 'yes'});
   //});
   authenticateUser(req, res, function(){ 
   console.log("weloer");
@@ -256,17 +254,17 @@ exports.welcome = function(req, res){
 
 exports.about = function(req, res){
   req.session.returnTo = req.path;
-  res.render('about', { title: 'About Where We Breathe', user : req.user});
+  res.render('about', { title: 'About Where We Breathe' });
 };
 
 exports.knowledgebase = function(req, res){
   req.session.returnTo = req.path;
-  res.render('knowledge-base', { title: 'Knowledge base', user : req.user});
+  res.render('knowledge-base', { title: 'Knowledge base' });
 };
 
 exports.vinhud = function(req, res){
   req.session.returnTo = req.path;
-  res.render('vinhud', { title: 'Am I looking for a VIN or a HUD number?', user : req.user});
+  res.render('vinhud', { title: 'Am I looking for a VIN or a HUD number?' });
 };
 
 exports.goBackSkipped = function(req, res){
@@ -300,7 +298,7 @@ exports.narratives = function(req, res){
       }
       modStories.push(obj);
     }
-    var options = { title: 'Forums', user : req.user, stories: modStories, qSet: qSet}
+    var options = { title: 'Forums', stories: modStories, qSet: qSet}
     options["returnTo"] = req.params.returnTo||null;
 
     console.log(options)
@@ -309,7 +307,7 @@ exports.narratives = function(req, res){
   });//end stories find
   })//end auth
   //authenticateUser(req, res, function(){ 
-  //  res.render('narratives', { title: 'Forums', user : req.user});
+  //  res.render('narratives', { title: 'Forums' });
   //});
 };
 
@@ -496,7 +494,7 @@ DATA DOWNLOAD
 ***********************************************************************/ 
 exports.download =  function(req, res) {
   req.session.returnTo = req.path;
-  res.render('download', { title: 'Export Where We Breathe Data', user : req.user});
+  res.render('download', { title: 'Export Where We Breathe Data' });
 }  
 exports.exportData =  function(req, res) {
 req.session.returnTo = req.path;
